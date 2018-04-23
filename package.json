@@ -1,0 +1,19 @@
+{
+  "name": "vue_auto_images",
+  "version": "1.0.0",
+  "description": "根据图片文件自动生成预览项目",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MEANyehoon/vue_auto_images.git"
+  },
+  "author": "yinhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MEANyehoon/vue_auto_images/issues"
+  },
+  "homepage": "https://github.com/MEANyehoon/vue_auto_images#readme"
+}
