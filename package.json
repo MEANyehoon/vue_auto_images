@@ -1,6 +1,6 @@
 {
   "name": "vue_auto_images",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "根据图片文件自动生成预览项目",
   "main": "index.js",
   "scripts": {
