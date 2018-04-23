@@ -7,22 +7,21 @@ npm install vue_auto_images -D
 
 ### 使用
 
-1.vue项目中static/project目录中分组放置图片
+1.vue项目中assets目录中分组放置图片
 
 图片名称从1递增
 
 eg:
 ```
 
-static
-| --project
-|     --test_1
-|         --1.png
-|         --2.png
-|     --test_2
-|         --1.png
-|         --2.png
-|         --3.png
+assets
+| --test_1
+|     --1.png
+|     --2.png
+| --test_2
+|     --1.png
+|     --2.png
+|     --3.png
 
 ```
 

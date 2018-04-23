@@ -6,7 +6,7 @@ const { writeFile } = require('./utils');
 
 function vueAutoBuild() {
     this.projectNames = [];
-    this.staticPath = '';
+    this.assetsPath = '';
     this.routePath = '';
     this.dashboardPath = '';
     this.pagePath = '';
@@ -14,7 +14,7 @@ function vueAutoBuild() {
     this.mainPagePath = '';
     this.imageCountOfProject = {};
 
-    this.getStaticPath()
+    this.getAssetsPath()
         .then(() => this.getProjectNames())
         .then(() => this.getImageCountOfProject())
         .then(() => this.removeRouteFile())
@@ -28,12 +28,12 @@ function vueAutoBuild() {
         .catch(err => console.log('err =>', err));
 }
 
-vueAutoBuild.prototype.getStaticPath = function() {
+vueAutoBuild.prototype.getAssetsPath = function() {
     return new Promise((resolve, reject) => {
-        this.staticPath = path.join(process.cwd(), 'static', 'project');
-        fs.exists(this.staticPath, (exists) => {
+        this.assetsPath = path.join(process.cwd(), 'src', 'assets');
+        fs.exists(this.assetsPath, (exists) => {
             !exists
-                ? reject(`${this.staticPath}目录不存在!`)
+                ? reject(`${this.assetsPath}目录不存在!`)
                 : resolve();
         })
     })
@@ -84,7 +84,7 @@ vueAutoBuild.prototype.getPagePath = function() {
 }
 vueAutoBuild.prototype.getProjectNames = function() {
     return walk({
-        path: this.staticPath,
+        path: this.assetsPath,
         filter: stat => stat.isDirectory()
     }).then(stats => {
         this.projectNames = stats.map(stat => stat.name);
@@ -93,7 +93,7 @@ vueAutoBuild.prototype.getProjectNames = function() {
 
 vueAutoBuild.prototype.getImageCountOfProject = function() {
     return Promise.all(this.projectNames.map(name => {
-        const projectPath = path.join(this.staticPath, name);
+        const projectPath = path.join(this.assetsPath, name);
         return walk({
             path: projectPath,
             filter: stat => /.\.png$/.test(stat.name)
@@ -175,10 +175,22 @@ vueAutoBuild.prototype.readTemplate = function() {
 
 vueAutoBuild.prototype.writePages = function() {
     return Promise.all(this.projectNames.map(name => {
-        const pageStr = this.templateStr.replace(/(#\{name\}|#\{count\})/g, matchStr => {
+
+        const imgHandles = new Array(this.imageCountOfProject[name]).fill(0)
+            .map((_, index) => {
+                index = index + 1;
+                return `img_${index}`;
+            })
+
+        const importImagesStr = imgHandles.map((handle, index) => {
+            index = index + 1;
+            return `import ${handle} from '@/assets/${name}/${index}.png'`
+        }).join(';\n');
+
+        const pageStr = this.templateStr.replace(/(#\{images\}|#\{imagesImport\})/g, matchStr => {
             const matchs = {
-                '#{name}': name,
-                '#{count}': this.imageCountOfProject[name]
+                '#{images}': `[${imgHandles.join(',')}]`,
+                '#{imagesImport}': importImagesStr
             }
             return matchs[matchStr]
         })
